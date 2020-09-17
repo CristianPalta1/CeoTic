@@ -21,7 +21,7 @@ const persistedReducer = persistReducer(persistConfig, reducer)
 // const store = createStore(reducer, {
 //     empresasList: [],
 //     usuariosList: [],
-    
+    /// {JSON.stryngy} 
 // })
 
 const store = createStore(

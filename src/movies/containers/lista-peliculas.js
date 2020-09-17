@@ -8,7 +8,7 @@ import Empty from '../components/datos-vacios';
 import Separador from '../../sections/components/separador-horizontal';
 import Peliculas from '../components/datos-peliculas';
 import Search from '../../sections/containers/search';
-
+/// import
 function mapStateToProps(state) {
   return {
     listaPeliculas: state.pelicuasList,
