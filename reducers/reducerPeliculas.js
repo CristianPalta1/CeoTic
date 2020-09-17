@@ -31,6 +31,7 @@ function reducer(state = initialState, action){
             const index = state.favoritos.findIndex(fav => fav.id == action.payload.id);
             const newFavs = state.favoritos.filter(fav => fav.id !== action.payload.id)
             // const newFavs = [];
+            //Asi busco por Id y borro
             console.log('New favs: ', newFavs);
             return {
                 ...state,

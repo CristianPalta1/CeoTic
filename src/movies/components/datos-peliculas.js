@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   TouchableHighlight,
 } from 'react-native'
-// Functions
+// Functions DE REDUX
 import {connect} from 'react-redux';
 import { addFavorite, deleteFavorite } from '../../../actions/favorites';
 

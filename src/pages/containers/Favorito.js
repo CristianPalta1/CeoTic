@@ -48,6 +48,9 @@ const styles = StyleSheet.create({
   details: {
     backgroundColor: 'white',
   },
+  estilo1: {
+    flex: 1,
+  }
 });
 
 

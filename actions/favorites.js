@@ -9,7 +9,7 @@ export const addFavorite = (favorite) => dispatch => {
         }
     }) 
 }
-
+////////// AQUI BORRO MEDIANTE EL ID
 export const deleteFavorite = (id) => dispatch => {
     console.log('favorite receved: ', id);
     dispatch({
