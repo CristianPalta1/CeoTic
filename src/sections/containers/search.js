@@ -1,35 +1,44 @@
-import React, {Component} from 'react';
-import {TextInput, StyleSheet, View, Image} from 'react-native';
+import React, {Component} from 'react'
+import {TextInput, StyleSheet, View, Image} from 'react-native'
 
-import API from '../../../utils/api';
-import {connect} from 'react-redux';
+import API from '../../../utils/api'
+import {connect} from 'react-redux'
 
 class Search extends Component {
-  constructor(props) {
-    super(props);
+  constructor (props) {
+    super(props)
     this.state = {
-      text: '',
-    };
+      data: [],
+      query: '',
+      fullData: [],
+    }
   }
 
   handleSubmit = async () => {
-    const busqueda = await API.search(this.state.text);
-    // console.log(busqueda);
+    const busqueda = await API.getPelicula()
+    // this.setState({
+    //   data: busqueda
+    // });
+    const resultado = busqueda.filter(
+      m => m.original_title === `${this.state.query}`,
+    )
+    // console.log(resultado)
     this.props.dispatch({
-      type: 'SET_PROMOMOVIE',
+      type: 'SET_BUSQUEDA',
       payload: {
-        moviePromo: busqueda,
+        busquedapelicula: resultado,
       },
-    });
-  };
+    })
+  }
 
-  handleChange = (text) => {
+  handleChange = text => {
+    console.log('texto', text)
     this.setState({
-      text,
-    });
-  };
+      query: text,
+    })
+  }
 
-  render() {
+  render () {
     return (
       <View style={styles.inputContainer}>
         <Image
@@ -37,17 +46,17 @@ class Search extends Component {
           source={require('../../../assets/icons/search.png')}
         />
         <TextInput
-          placeholder="Que buscas"
+          placeholder='Que buscas'
           autoCorrect={false}
-          autoCapitalize="words"
-          underlineColorAndroid="transparent"
+          autoCapitalize='words'
+          underlineColorAndroid='transparent'
           onSubmitEditing={this.handleSubmit}
           onChangeText={this.handleChange}
           style={styles.inputs}
           // onChangeText={(password) => this.setState({password})}
         />
       </View>
-    );
+    )
   }
 }
 
@@ -82,9 +91,7 @@ const styles = StyleSheet.create({
     height: 30,
     marginLeft: 6,
     justifyContent: 'center',
-    
-    
   },
-});
+})
 
-export default connect(null)(Search);
+export default connect(null)(Search)

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Text, FlatList, ScrollView, ActivityIndicator} from 'react-native';
 import {connect} from 'react-redux';
-// import MoviePromo from '../../screens/containers/videoprom';
+import Busqueda from '../../pages/containers/Busqueda';
 // import Registro from '../../screens/containers/Registro';
 import ComponenteLista from '../components/layout-lista-peliculas';
 import Empty from '../components/datos-vacios';
@@ -12,7 +12,7 @@ import Search from '../../sections/containers/search';
 function mapStateToProps(state) {
   return {
     listaPeliculas: state.pelicuasList,
-    // moviePromo: state.moviePromo,
+    busquedapelicula: state.busquedapelicula,
   };
 }
 
@@ -22,9 +22,9 @@ class ListaAfiliados extends Component {
   itemSeparator = () => <Separador />;
   viewPromo = (item) => {
     this.props.dispatch({
-      type: 'SET_PROMOMOVIE',
+      type: 'SET_BUSQUEDA',
       payload: {
-        moviePromo: item,
+        busquedapelicula: item,
       },
     });
   };
@@ -33,7 +33,7 @@ class ListaAfiliados extends Component {
       <Peliculas
         {...item}
         onPress={() => {
-          this.viewPromo(item);
+          this.busquedapelicula(item);
         }}
       />
     );
@@ -43,11 +43,14 @@ class ListaAfiliados extends Component {
   }
 
   render() {
-    // if (this.props.moviePromo) {
-    //   return <MoviePromo />;
-    // }
+    if (this.props.busquedapelicula) {
+      return <Busqueda />;
+    }
     return (
       <ComponenteLista >
+        {/* <Text>
+          {JSON.stringify(this.props.busquedapelicula)}
+        </Text> */}
         <FlatList
           // data puede ser una lista o un array
           //La forma que renderizo es con la propiedad renderItem
