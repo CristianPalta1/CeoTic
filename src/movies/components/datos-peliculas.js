@@ -7,8 +7,12 @@ import {
   TouchableOpacity,
   TouchableHighlight,
 } from 'react-native'
+// Functions
+import {connect} from 'react-redux';
+import { addFavorite, deleteFavorite } from '../../../actions/favorites';
 
-function Peliculas (props) {
+function Peliculas ({isFavorite, favoritos, ...props}) {
+
   return (
     <View style={styles.container}>
       <View style={styles.left}>
@@ -38,13 +42,25 @@ function Peliculas (props) {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <TouchableOpacity style={styles.buttonContainer}>
-            {/* <Image
-            style={styles.inputIcon}
-            source={require('../../../assets/icons/home.png')}
-          /> */}
-            <Text style={styles.loginText2}>AGREGAR A FAVORITOS</Text>
-          </TouchableOpacity>
+            {
+              isFavorite ? 
+                <TouchableOpacity 
+                  style={styles.buttonContainer}
+                  onPress={() => props.deleteFavorite(props.movie.id)}
+                >
+                  <Text style={styles.loginText2}>ELIMINAR DE FAVORITOS</Text>
+                </TouchableOpacity>
+              :
+                  <>
+                  <TouchableOpacity 
+                    style={styles.buttonContainer}
+                    onPress={() => props.addFavorite(props.movie)}
+                  >
+                    <Text style={styles.loginText2}>AGREGAR A FAVORITOS</Text>
+                  </TouchableOpacity>
+                  </>
+            }
+          
         </View>
         <View
           style={{
@@ -53,13 +69,15 @@ function Peliculas (props) {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <TouchableOpacity style={styles.buttonContainer}>
-            {/* <Image
-            style={styles.inputIcon}
-            source={require('../../../assets/icons/home.png')}
-          /> */}
-            <Text style={styles.loginText2}>DESCARGAR</Text>
-          </TouchableOpacity>
+            {
+              isFavorite ? 
+                null
+              :
+                <TouchableOpacity style={styles.buttonContainer}>
+                  <Text style={styles.loginText2}>DESCARGAR</Text>
+                </TouchableOpacity>
+            }
+          
         </View>
       </View>
     </View>
@@ -167,4 +185,10 @@ const styles = StyleSheet.create({
   },
 })
 
-export default Peliculas
+function mapStateToProps(state) {
+  return{
+    favoritos: state.favoritos,
+  }
+}
+
+export default connect(mapStateToProps, {addFavorite, deleteFavorite})(Peliculas)

@@ -1,3 +1,5 @@
+import { connect } from "react-redux";
+
 const initialState = {
     favoritos: []
 }
@@ -17,9 +19,22 @@ function reducer(state = initialState, action){
         }
       
         case 'ADD-FAVORITO': {
+            // const newArray = state.favoritos.push(action.payload.favorite);
+            // console.log('Favoritos',state.favoritos)
             return {
                 ...state,
-                favoritos: [...state.favoritos, action.payload.movie],
+                favoritos: [...state.favoritos, action.payload.favorite],
+            }
+        }
+
+        case 'DELETE-FAVORITO': {
+            const index = state.favoritos.findIndex(fav => fav.id == action.payload.id);
+            const newFavs = state.favoritos.filter(fav => fav.id !== action.payload.id)
+            // const newFavs = [];
+            console.log('New favs: ', newFavs);
+            return {
+                ...state,
+                favoritos: newFavs,
             }
         }
         default:
