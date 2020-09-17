@@ -1,41 +1,142 @@
-import React, {Component} from 'react';
-import {View, Text, StyleSheet, Button, StatusBar} from 'react-native';
-// import HeaderInicio from '../components/customHeaderInicio';
+import React from 'react';
 
-class Download extends Component {
-  handlePress = () => {
-    this.props.navigation.navigate('Empresas');
+//Import Required Components
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  PermissionsAndroid,
+  Image,
+  Platform,
+} from 'react-native';
+
+//Import RNFetchBlob for the file download
+import RNFetchBlob from 'rn-fetch-blob';
+
+const Download = () => {
+
+  const checkPermission = async () => {
+    
+    //Function to check the platform
+    //If iOS the start downloading
+    //If Android then ask for runtime permission
+
+    if (Platform.OS === 'ios') {
+      downloadImage();
+    } else {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          {
+            title: 'Storage Permission Required',
+            message: 'This Download needs access to your storage to download Photos',
+          }
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          //Once user grant the permission start downloading
+          console.log('Storage Permission Granted.');
+          downloadImage();
+        } else {
+          //If permission denied then show alert 'Storage Permission Not Granted'
+          alert('Storage Permission Not Granted');
+        }
+      } catch (err) {
+        //To handle permission related issue
+        console.warn(err);
+      }
+    }
   };
-  render() {
-    return (
-      <View style={styles.container}>
-        {/* <HeaderInicio navigation = {this.props.navigation} /> */}
-        <StatusBar barStyle="light-content" backgroundColor="#6a51ae" />
-        <Text style={styles.title}>Quienes Somos</Text>
-        <Text style={styles.title}>Mision </Text>
-        {/* <Button
-          title="Ir a Empresas"
-          onPress={this.handlePress}
 
-        /> */}
+  const downloadImage = () => {
+    //Main function to download the image
+    let date = new Date(); //To add the time suffix in filename
+    //Image URL which we want to download
+    let image_URL =
+      'https://raw.githubusercontent.com/AboutReact/sampleresource/master/gift.png';
+    //Getting the extention of the file
+    let ext = getExtention(image_URL);
+    ext = '.' + ext[0];
+    //Get config and fs from RNFetchBlob
+    //config: To pass the downloading related options
+    //fs: To get the directory path in which we want our image to download
+    const { config, fs } = RNFetchBlob;
+    let PictureDir = fs.dirs.PictureDir;
+    let options = {
+      fileCache: true,
+      addAndroidDownloads: {
+        //Related to the Android only
+        useDownloadManager: true,
+        notification: true,
+        path:
+          PictureDir +
+          '/image_' + Math.floor(date.getTime() + date.getSeconds() / 2) + ext,
+        description: 'Image',
+      },
+    };
+    config(options)
+      .fetch('GET', image_URL)
+      .then(res => {
+        //Showing alert after successful downloading
+        console.log('res -> ', JSON.stringify(res));
+        alert('Image Downloaded Successfully.');
+      });
+  };
+
+  const getExtention = filename => {
+    //To get the file extension
+    return /[.]/.exec(filename) ? /[^.]+$/.exec(filename) : undefined;
+  };
+
+  return (
+    <View style={styles.container}>
+      <View style={{ alignItems: 'center' }}>
+        <Text style={{ fontSize: 30, textAlign: 'center' }}>
+          React Native Image Download Example
+        </Text>
+        <Text
+          style={{
+            fontSize: 25,
+            marginTop: 20,
+            marginBottom: 30,
+            textAlign: 'center',
+          }}>
+          www.aboutreact.com
+        </Text>
       </View>
-    );
-  }
-}
+      <Image
+        source={{
+          uri:
+            'https://raw.githubusercontent.com/AboutReact/sampleresource/master/gift.png',
+        }}
+        style={{ width: '100%', height: 100, resizeMode: 'contain', margin: 5 }}
+      />
+      <TouchableOpacity style={styles.button} onPress={checkPermission}>
+        <Text style={styles.text}>Download Image</Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+
+export default Download;
 
 const styles = StyleSheet.create({
   container: {
-    
-    alignItems: 'center',
+    flex: 1,
     justifyContent: 'center',
-  },
-  title: {
     alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#F5FCFF',
   },
-  details: {
-    backgroundColor: 'white',
+  button: {
+    width: '80%',
+    padding: 10,
+    backgroundColor: 'orange',
+    margin: 10,
+  },
+  text: {
+    color: '#fff',
+    fontSize: 20,
+    textAlign: 'center',
+    padding: 5,
   },
 });
-
-export default Download;
