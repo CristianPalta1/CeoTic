@@ -30,7 +30,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 // import HeaderInicio from '../components/customHeaderInicio';
 // import Perfil from '../containers'
 
-const filename = 'audio.aac';
+const filename = 'test.aac';
 // const pathfile = ''
 
 type Props = {};
@@ -377,7 +377,7 @@ storeImagaSource = async (value) => {
             <TextInput
               style={styles.inputs}
               placeholder='CORREO'
-              secureTextEntry={true}
+              keyboardType='default'
               underlineColorAndroid='transparent'
               // onChangeText={(password) => this.setState({password})}
             />
@@ -390,7 +390,7 @@ storeImagaSource = async (value) => {
             <TextInput
               style={styles.inputs}
               placeholder='CELULAR'
-              secureTextEntry={true}
+              keyboardType='numeric'
               underlineColorAndroid='transparent'
               // onChangeText={(password) => this.setState({password})}
             />

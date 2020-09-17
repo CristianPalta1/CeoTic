@@ -1,5 +1,6 @@
-import {createStore} from 'redux'
+import {createStore, applyMiddleware, compose} from 'redux'
 import { persistStore, persistReducer } from 'redux-persist'
+import thunk from 'redux-thunk'
 import storage from 'redux-persist/lib/storage'
 import reducer from './reducers/reducerPeliculas'
 // import { AsyncStorage } from 'react-native'
@@ -11,7 +12,10 @@ const persistConfig = {
     login: true
    
   }
-
+  const estadoInicial = {
+    
+  };
+  const middleware = [thunk];
 const persistedReducer = persistReducer(persistConfig, reducer)
 
 // const store = createStore(reducer, {
@@ -20,7 +24,13 @@ const persistedReducer = persistReducer(persistConfig, reducer)
     
 // })
 
-const store = createStore(persistedReducer)
+const store = createStore(
+  persistedReducer,
+  estadoInicial,
+    compose(
+        applyMiddleware(...middleware)
+    )
+)
 const persistor = persistStore(store)
 
 

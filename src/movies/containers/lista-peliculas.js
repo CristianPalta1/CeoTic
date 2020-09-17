@@ -32,6 +32,7 @@ class ListaAfiliados extends Component {
     return (
       <Peliculas
         {...item}
+        movie={item}
         onPress={() => {
           this.busquedapelicula(item);
         }}

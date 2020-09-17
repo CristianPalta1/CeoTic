@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, Button, StatusBar} from 'react-native';
+import {View, Text, StyleSheet, Button, StatusBar, ScrollView} from 'react-native';
 // import HeaderInicio from '../components/customHeaderInicio';
+import {connect} from 'react-redux';
+import Peliculas from '../../movies/components/datos-peliculas';
 
 class Favorito extends Component {
   handlePress = () => {
@@ -8,26 +10,36 @@ class Favorito extends Component {
   };
   render() {
     return (
-      <View style={styles.container}>
-        {/* <HeaderInicio navigation = {this.props.navigation} /> */}
-        <StatusBar barStyle="light-content" backgroundColor="#6a51ae" />
-        <Text style={styles.title}>Quienes Somos</Text>
-        <Text style={styles.title}>Mision </Text>
-        {/* <Button
-          title="Ir a Empresas"
-          onPress={this.handlePress}
-
-        /> */}
-      </View>
+      <>
+      <StatusBar barStyle="light-content" backgroundColor="#6a51ae" />
+      <ScrollView style={styles.container}>
+          {
+            this.props.favoritos.map((item, key) => (
+              <Peliculas
+                key={key}
+                {...item}
+                movie={item}
+                isFavorite={true}
+              />  
+            ))
+          }
+      </ScrollView>
+      </>
     );
   }
 }
 
+function mapStateToProps(state) {
+  return{
+    favoritos: state.favoritos,
+  }
+}
+
+export default connect(mapStateToProps)(Favorito);
+
 const styles = StyleSheet.create({
   container: {
     
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   title: {
     alignItems: 'center',
@@ -38,4 +50,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Favorito;
+
