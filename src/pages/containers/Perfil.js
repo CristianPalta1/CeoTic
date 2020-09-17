@@ -24,6 +24,9 @@ import {
   Recorder,
   MediaStates,
 } from '@react-native-community/audio-toolkit'
+
+import ImagePicker from 'react-native-image-picker';
+import AsyncStorage from '@react-native-community/async-storage';
 // import HeaderInicio from '../components/customHeaderInicio';
 // import Perfil from '../containers'
 
@@ -74,6 +77,8 @@ class Perfil extends Component {
       progress: 0,
 
       error: null,
+      avatarSource: null,
+      imageData: null,
     }
   }
 
@@ -95,6 +100,19 @@ class Perfil extends Component {
         this.setState({progress: currentProgress})
       }
     }, 100)
+  }
+
+  async componentDidMount() {
+    try {
+      const value = await AsyncStorage.getItem('ImageSource')
+      if(value !== null) {
+        this.setState({
+          avatarSource: JSON.parse(value),
+      })
+      }
+    } catch(e) {
+      // error reading value
+    }
   }
 
   componentWillUnmount () {
@@ -267,6 +285,51 @@ class Perfil extends Component {
     }
   }
 
+  // Funcion para seleccionar imagen de perfil
+  selectImage = () => {
+    const options = {
+        title: 'Selecciona un avatar',
+        takePhotoButtonTitle: 'Tomar una foto...',
+        chooseFromLibraryButtonTitle: 'Seleccionar desde galeria',
+        cancelButtonTitle: 'Cancelar',
+        quality: 1.0,
+        maxWidth: 500,
+        maxHeight: 500,
+        // storageOptions: {
+        //     skipBackup: true,
+        //     privateDirectory: true,
+        // },
+    };
+
+    ImagePicker.showImagePicker(options, response => {
+        console.log('Response = ', response);
+        if (response.didCancel) {
+            console.log('User cancelled photo picker');
+        } else if (response.error) {
+            console.log('ImagePicker Error: ', response.error);
+        } else if (response.customButton) {
+            console.log('User tapped custom button: ', response.customButton);
+        } else {
+            let source = {uri: response.uri};
+            console.log(source)
+            this.setState({
+                avatarSource: source,
+                imageData: response
+            })
+            this.storeImagaSource(JSON.stringify(source));
+
+        }
+    });
+}
+
+storeImagaSource = async (value) => {
+  try {
+    await AsyncStorage.setItem('ImageSource', value)
+  } catch (e) {
+    console.log(e)
+  }
+}
+
   render () {
     return (
       <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
@@ -281,13 +344,13 @@ class Perfil extends Component {
             <View style={styles.header1}>
               <Image
                 style={styles.profileImage}
-                source={require('../../../assets/icons/profile.png')}
+                source={this.state.avatarSource ? this.state.avatarSource : require('../../../assets/icons/profile.png')}
               />
             </View>
             <View style={styles.header2}>
               <TouchableOpacity
                 style={styles.fondo2}
-                onPress={this.handlePress}>
+                onPress={this.selectImage}>
                 <Text style={{color: 'white'}}>Camara</Text>
               </TouchableOpacity>
             </View>
@@ -403,14 +466,19 @@ const styles = StyleSheet.create({
   },
 
   header1: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    marginTop: 20,
+    marginBottom: 20,
+    width: 100,
+    height: 100,
+    // backgroundColor: 'red',
+    borderRadius: 100,
+    overflow: 'hidden',
+
   },
   profileImage: {
-    height: 100,
-    width: 100,
-    resizeMode: 'contain',
+    ...StyleSheet.absoluteFill,
+    height: undefined,
+    width: undefined,
   },
   header2: {
     paddingTop: 50,
@@ -421,6 +489,7 @@ const styles = StyleSheet.create({
   },
   fondo2: {
     borderRadius: 10,
+    width: 70,
     position: 'relative',
     left: 0,
     top: 0,
